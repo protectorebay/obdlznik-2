@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<title>Supply / Demand Zone</title>
+
+<style>
+    body {
+        margin: 0;
+        background: black;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        width: 1920px;
+        height: 1080px;
+        position: relative;
+    }
+
+    .rectangle {
+        position: absolute;
+        top: 40%; /* zatiaľ jedna zóna */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 1400px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .gradient {
+        width: 100%;
+        height: 300%;
+        position: absolute;
+        top: 0;
+        transform-origin: top;
+        background: linear-gradient(
+            to bottom,
+            rgba(139, 0, 0, 1) 0%,
+            rgba(139, 0, 0, 0.8) 30%,
+            rgba(0, 0, 0, 0.3) 70%,
+            rgba(0, 0, 0, 0) 100%
+        );
+        transition: transform 1s ease-in-out;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="rectangle">
+        <div class="gradient" id="gradient"></div>
+    </div>
+</div>
+
+<script>
+const gradient = document.getElementById("gradient");
+
+// === POHYB (mikro random) ===
+let currentY = 0;
+let currentScale = 1;
+
+function animatePosition() {
+    const change = (Math.random() * 20) - 10;
+    currentY += change;
+
+    currentY = Math.max(-40, Math.min(40, currentY));
+
+    applyTransform();
+
+    const nextMove = Math.random() * 1500 + 500;
+    setTimeout(animatePosition, nextMove);
+}
+
+// === VÝŠKA (macro pomalá zmena) ===
+function animateHeight() {
+    const targetScale = 0.7 + Math.random() * 0.6;
+    const duration = (Math.random() * 6 + 1) * 60 * 1000;
+
+    const startScale = currentScale;
+    const startTime = performance.now();
+
+    function update(now) {
+        const progress = (now - startTime) / duration;
+
+        if (progress >= 1) {
+            currentScale = targetScale;
+            applyTransform();
+        } else {
+            const eased = 0.5 - Math.cos(progress * Math.PI) / 2;
+            currentScale = startScale + (targetScale - startScale) * eased;
+
+            applyTransform();
+            requestAnimationFrame(update);
+        }
+    }
+
+    requestAnimationFrame(update);
+    setTimeout(animateHeight, duration);
+}
+
+// === SPOLOČNÁ TRANSFORMÁCIA ===
+function applyTransform() {
+    gradient.style.transform =
+        `translateY(${currentY}px) scaleY(${currentScale})`;
+}
+
+// === START ===
+animatePosition();
+animateHeight();
+
+</script>
+
+</body>
+</html>
