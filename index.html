@@ -25,11 +25,13 @@
         position: absolute;
         top: 50%;
         left: 50%;
+        transform: translate(-50%, -50%);
         width: 1400px;
         height: 200px;
         overflow: hidden;
-        transform-origin: center;
-        transition: transform 1.5s ease-in-out;
+
+        /* plynulá zmena výšky */
+        transition: height 1.5s ease-in-out;
     }
 
     .gradient {
@@ -61,11 +63,7 @@
     const gradient = document.getElementById("gradient");
     const rectangle = document.getElementById("rectangle");
 
-    let currentScaleY = 1;
-
-    function updateRectangleTransform() {
-        rectangle.style.transform = `translate(-50%, -50%) scaleY(${currentScaleY})`;
-    }
+    const baseHeight = 200;
 
     function animateGradient() {
         const randomY = (Math.random() * 80) - 40;
@@ -76,19 +74,18 @@
     }
 
     function animateHeight() {
-        const changePercent = Math.random() * 0.2 + 0.1; // 10–30%
+        // 10% – 30% z 200px
+        const changePercent = Math.random() * 0.2 + 0.1;
         const direction = Math.random() > 0.5 ? 1 : -1;
 
-        currentScaleY = 1 + (changePercent * direction);
+        const newHeight = baseHeight * (1 + (changePercent * direction));
 
-        updateRectangleTransform();
+        rectangle.style.height = `${newHeight}px`;
 
-        const nextResize = Math.random() * (300000 - 30000) + 30000; // 30s–5min
+        const nextResize = Math.random() * (300000 - 30000) + 30000;
         setTimeout(animateHeight, nextResize);
     }
 
-    // init
-    updateRectangleTransform();
     animateGradient();
     animateHeight();
 </script>
