@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>Animated Red Gradient</title>
+<title>Animated Green Gradient</title>
 
 <style>
     body {
@@ -30,7 +30,6 @@
         height: 200px;
         overflow: hidden;
 
-        /* plynulá zmena výšky */
         transition: height 1.5s ease-in-out;
     }
 
@@ -41,8 +40,8 @@
         top: -100%;
         background: linear-gradient(
             to bottom,
-            rgba(139, 0, 0, 1) 0%,
-            rgba(139, 0, 0, 0.8) 30%,
+            rgba(0, 80, 0, 1) 0%,
+            rgba(0, 80, 0, 0.8) 30%,
             rgba(0, 0, 0, 0.3) 70%,
             rgba(0, 0, 0, 0) 100%
         );
@@ -63,8 +62,6 @@
     const gradient = document.getElementById("gradient");
     const rectangle = document.getElementById("rectangle");
 
-    const baseHeight = 200;
-
     function animateGradient() {
         const randomY = (Math.random() * 80) - 40;
         gradient.style.transform = `translateY(${randomY}px)`;
@@ -74,15 +71,14 @@
     }
 
     function animateHeight() {
-        // 10% – 30% z 200px
-        const changePercent = Math.random() * 0.2 + 0.1;
-        const direction = Math.random() > 0.5 ? 1 : -1;
-
-        const newHeight = baseHeight * (1 + (changePercent * direction));
+        // 50px – 320px
+        const newHeight = Math.random() * (320 - 50) + 50;
 
         rectangle.style.height = `${newHeight}px`;
 
+        // 30s – 300s
         const nextResize = Math.random() * (300000 - 30000) + 30000;
+
         setTimeout(animateHeight, nextResize);
     }
 
