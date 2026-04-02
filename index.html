@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>Supply / Demand Zone</title>
+<title>Animated Red Gradient</title>
 
 <style>
     body {
@@ -23,20 +23,20 @@
 
     .rectangle {
         position: absolute;
-        top: 40%; /* zatiaľ jedna zóna */
+        top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
         width: 1400px;
         height: 200px;
         overflow: hidden;
+        transform-origin: center;
+        transition: transform 1.5s ease-in-out;
     }
 
     .gradient {
         width: 100%;
         height: 300%;
         position: absolute;
-        top: 0;
-        transform-origin: top;
+        top: -100%;
         background: linear-gradient(
             to bottom,
             rgba(139, 0, 0, 1) 0%,
@@ -52,67 +52,45 @@
 <body>
 
 <div class="container">
-    <div class="rectangle">
+    <div class="rectangle" id="rectangle">
         <div class="gradient" id="gradient"></div>
     </div>
 </div>
 
 <script>
-const gradient = document.getElementById("gradient");
+    const gradient = document.getElementById("gradient");
+    const rectangle = document.getElementById("rectangle");
 
-// === POHYB (mikro random) ===
-let currentY = 0;
-let currentScale = 1;
+    let currentScaleY = 1;
 
-function animatePosition() {
-    const change = (Math.random() * 20) - 10;
-    currentY += change;
-
-    currentY = Math.max(-40, Math.min(40, currentY));
-
-    applyTransform();
-
-    const nextMove = Math.random() * 1500 + 500;
-    setTimeout(animatePosition, nextMove);
-}
-
-// === VÝŠKA (macro pomalá zmena) ===
-function animateHeight() {
-    const targetScale = 0.7 + Math.random() * 0.6;
-    const duration = (Math.random() * 6 + 1) * 60 * 1000;
-
-    const startScale = currentScale;
-    const startTime = performance.now();
-
-    function update(now) {
-        const progress = (now - startTime) / duration;
-
-        if (progress >= 1) {
-            currentScale = targetScale;
-            applyTransform();
-        } else {
-            const eased = 0.5 - Math.cos(progress * Math.PI) / 2;
-            currentScale = startScale + (targetScale - startScale) * eased;
-
-            applyTransform();
-            requestAnimationFrame(update);
-        }
+    function updateRectangleTransform() {
+        rectangle.style.transform = `translate(-50%, -50%) scaleY(${currentScaleY})`;
     }
 
-    requestAnimationFrame(update);
-    setTimeout(animateHeight, duration);
-}
+    function animateGradient() {
+        const randomY = (Math.random() * 80) - 40;
+        gradient.style.transform = `translateY(${randomY}px)`;
 
-// === SPOLOČNÁ TRANSFORMÁCIA ===
-function applyTransform() {
-    gradient.style.transform =
-        `translateY(${currentY}px) scaleY(${currentScale})`;
-}
+        const nextMove = Math.random() * 1500 + 500;
+        setTimeout(animateGradient, nextMove);
+    }
 
-// === START ===
-animatePosition();
-animateHeight();
+    function animateHeight() {
+        const changePercent = Math.random() * 0.2 + 0.1; // 10–30%
+        const direction = Math.random() > 0.5 ? 1 : -1;
 
+        currentScaleY = 1 + (changePercent * direction);
+
+        updateRectangleTransform();
+
+        const nextResize = Math.random() * (300000 - 30000) + 30000; // 30s–5min
+        setTimeout(animateHeight, nextResize);
+    }
+
+    // init
+    updateRectangleTransform();
+    animateGradient();
+    animateHeight();
 </script>
 
 </body>
